@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Mensaje Diario ✨</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .date {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .section {
+            margin: 25px 0;
+            text-align: left;
+            border-bottom: 1px dashed #ecf0f1;
+            padding-bottom: 15px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        h3 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        h3::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 50%;
+        }
+        .luck-numbers {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.3em;
+            letter-spacing: 1px;
+        }
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1><span class="emoji">✨</span> Tu Mensaje del Día <span class="emoji">✨</span></h1>
+        <div class="date" id="fecha"></div>
+        
+        <div class="section">
+            <h3><span class="emoji">💌</span> Mensaje de Amor/Amistad</h3>
+            <p id="amor"></p>
+        </div>
+        
+        <div class="section">
+            <h3><span class="emoji">💎</span> Mensaje de Oro</h3>
+            <p id="oro"></p>
+        </div>
+        
+        <div class="section">
+            <h3><span class="emoji">🚀</span> Frase Motivadora</h3>
+            <p id="motivacion"></p>
+        </div>
+        
+        <div class="section">
+            <h3><span class="emoji">🎯</span> Llamado a la Acción</h3>
+            <p id="accion"></p>
+        </div>
+        
+        <div class="section">
+            <h3><span class="emoji">🍀</span> Números de la Suerte</h3>
+            <p>Hoy son: <span class="luck-numbers" id="numeros"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // ====================== MENSAJES ======================
+        const mensajesAmor = [
+            "Hoy es un día para conectar con quienes te importan. ¡Diles lo que sientes!",
+            "El amor está en los pequeños detalles. Busca oportunidades para ser amable.",
+            "La amistad es un tesoro. Agradece a quienes siempre están contigo.",
+            "Un mensaje sincero puede cambiar el día de alguien. ¡Hazlo hoy!",
+            "El perdón libera el corazón. Si hay alguien a quien debas perdonar, hoy es el día."
+        ];
+        
+        const mensajesOro = [
+            "La paciencia es la clave para alcanzar tus sueños. Confía en el proceso.",
+            "Hoy es tu oportunidad para brillar. Aprovecha cada momento.",
+            "La generosidad siempre regresa multiplicada. Comparte sin esperar nada.",
+            "El conocimiento es el único tesoro que crece cuando se comparte.",
+            "La honestidad contigo mismo es el primer paso hacia el éxito."
+        ];
+        
+        const frasesMotivadoras = [
+            "El éxito es la suma de pequeños esfuerzos repetidos día tras día.",
+            "No esperes el momento perfecto, toma el momento y hazlo perfecto.",
+            "Cada día es una nueva oportunidad para cambiar tu vida.",
+            "Si te caes 7 veces, levántate 8.",
+            "El miedo es solo una ilusión. ¡Atrévete a dar el paso!"
+        ];
+        
+        const llamadosAccion = [
+            "Hoy, da el primer paso hacia ese proyecto que has pospuesto.",
+            "Sonríe a un extraño. Pequeños gestos cambian el mundo.",
+            "Toma 10 minutos para planear tu semana. ¡El futuro te lo agradecerá!",
+            "Escribe una meta en un papel y ponla donde la veas cada día.",
+            "Llama a esa persona importante para ti. ¡No dejes para mañana lo que puedes hacer hoy!"
+        ];
+
+        // ====================== NÚMEROS DE LA SUERTE ======================
+        function generarNumerosSuerte() {
+            const hoy = new Date();
+            const inicioAno = new Date(hoy.getFullYear(), 0, 0);
+            const diaDelAno = Math.floor((hoy - inicioAno) / (1000 * 60 * 60 * 24));
+            
+            // Fórmula para números únicos por día (usando primos para evitar repeticiones)
+            const num1 = (diaDelAno * 17) % 99 + 1; // Número entre 1-99
+            const num2 = (diaDelAno * 31) % 99 + 1;
+            
+            return `${num1} y ${num2}`;
+        }
+
+        // ====================== FUNCIÓN PRINCIPAL ======================
+        function mostrarMensajeDelDia() {
+            const hoy = new Date();
+            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("fecha").textContent = hoy.toLocaleDateString('es-ES', opcionesFecha);
+
+            // Usar el día del año como semilla para mensajes fijos
+            const inicioAno = new Date(hoy.getFullYear(), 0, 0);
+            const diaDelAno = Math.floor((hoy - inicioAno) / (1000 * 60 * 60 * 24));
+
+            // Seleccionar mensajes basados en el día del año
+            function seleccionarMensaje(array) {
+                return array[diaDelAno % array.length];
+            }
+
+            // Asignar contenido
+            document.getElementById("amor").textContent = seleccionarMensaje(mensajesAmor);
+            document.getElementById("oro").textContent = seleccionarMensaje(mensajesOro);
+            document.getElementById("motivacion").textContent = seleccionarMensaje(frasesMotivadoras);
+            document.getElementById("accion").textContent = seleccionarMensaje(llamadosAccion);
+            document.getElementById("numeros").textContent = generarNumerosSuerte();
+        }
+
+        // Ejecutar al cargar la página
+        window.onload = mostrarMensajeDelDia;
+    </script>
+</body>
+</html>
